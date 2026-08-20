@@ -4,6 +4,13 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>최적설계 시각 가이드 — 보면서 이해하는 DOE · 대리모델 · 최적화 · 신뢰성</title>
+<meta name="description" content="CAE 최적설계의 전 과정을 애니메이션으로 이해하는 한국어 가이드. DOE, 대리모델, 최적화 알고리즘, RBDO/RDO, 다목적 최적화 — 모든 그래프는 브라우저가 실제로 계산하며, 페이지마다 자체검증이 붙어 있습니다.">
+<meta name="author" content="Euichan Lee">
+<meta property="og:title" content="최적설계 시각 가이드">
+<meta property="og:description" content="보면서 이해하는 DOE · 대리모델 · 최적화 · 신뢰성. 모든 그래프는 실제 계산, 페이지마다 자체검증.">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="ko_KR">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 32 32%27><rect width=%2732%27 height=%2732%27 rx=%277%27 fill=%27%234f46e5%27/><text x=%2716%27 y=%2722%27 font-size=%2715%27 text-anchor=%27middle%27>📐</text></svg>">
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 :root{
@@ -162,8 +169,8 @@ details.verify .row .ng{color:var(--bad);font-weight:800}
   <div class="foot">
     툴 표기
     <div style="margin-top:5px">
-      <span class="badge b-hs">HyperStudy</span><span class="badge b-os">optiSLang</span>
-      <span class="badge b-pi">PIAnO</span><span class="badge b-do">DashOpti</span>
+      <span class="badge b-hs">Tool A</span><span class="badge b-os">Tool B</span>
+      <span class="badge b-pi">Tool C</span>
     </div>
   </div>
 </nav>
@@ -207,18 +214,17 @@ details.verify .row .ng{color:var(--bad);font-weight:800}
   </div>
   <div class="tbl-scroll" style="margin-top:12px">
   <table>
-    <tr><th style="width:15%">단계</th><th style="width:26%">하는 일</th><th>왜 필요한가</th><th style="width:17%">담당</th></tr>
+    <tr><th style="width:15%">단계</th><th style="width:26%">하는 일</th><th>왜 필요한가</th><th style="width:17%">단계 구분</th></tr>
     <tr><td><b style="color:var(--doe)">1. DOE</b></td><td>해석을 <b>어디에</b> 쓸지 실험점 선정</td>
-        <td>같은 20번을 써도 점을 어디 찍느냐로 얻는 정보량이 몇 배 차이납니다</td><td class="small">표B (Builder)</td></tr>
+        <td>같은 20번을 써도 점을 어디 찍느냐로 얻는 정보량이 몇 배 차이납니다</td><td class="small">준비 단계</td></tr>
     <tr><td><b style="color:var(--sur)">2. 대리모델</b></td><td>그 점들로 CAE를 흉내내는 모델 학습</td>
-        <td>학습 후엔 예측이 <b>0.001초</b> — 최적화를 수만 번 돌려도 공짜</td><td class="small">표B (Builder)</td></tr>
+        <td>학습 후엔 예측이 <b>0.001초</b> — 최적화를 수만 번 돌려도 공짜</td><td class="small">준비 단계</td></tr>
     <tr style="background:#fff7ed"><td><b style="color:var(--opt)">3. 최적화</b></td><td>목표를 만족하는 최선의 조합 탐색</td>
-        <td>사람이 손으로 못 찾는 조합을 알고리즘이 찾아냅니다</td><td class="small"><b>표C (Optimizer)</b></td></tr>
+        <td>사람이 손으로 못 찾는 조합을 알고리즘이 찾아냅니다</td><td class="small"><b>이 가이드의 초점</b></td></tr>
     <tr style="background:#fdf4ff"><td><b style="color:var(--rbdo)">4. 신뢰성</b></td><td>공차·산포를 반영해 불량률 제어</td>
-        <td>도면값은 완벽해도 실제 제품은 오차가 있습니다</td><td class="small"><b>표C (Optimizer)</b></td></tr>
+        <td>도면값은 완벽해도 실제 제품은 오차가 있습니다</td><td class="small"><b>이 가이드의 초점</b></td></tr>
   </table></div>
-  <div class="ins"><b>내 업무(표C) 위치</b> — 3·4단계가 DashOpti의 <b>Optimizer 모듈</b>이고, 이번 벤치마킹 대상입니다.
-  1·2단계는 표B(Model Builder/Runner) 담당이지만, Optimizer가 그 결과물 위에서 돌기 때문에 같이 알아야 합니다.</div>
+  <div class="ins"><b>이 가이드의 초점</b> — 3·4단계(최적화·신뢰성)를 중심으로 다루되, 그 아래를 받치는 1·2단계(DOE·대리모델)도 함께 정리했습니다. 최적화는 언제나 앞 단계의 결과물 위에서 돌기 때문입니다.</div>
 </div>
 
 <div class="card">
@@ -278,7 +284,7 @@ details.verify .row .ng{color:var(--bad);font-weight:800}
       <ul class="li small" style="margin-top:6px;color:var(--muted)">
         <li>입력 파일의 숫자 한 곳만 치환하면 끝 — <b>매우 간단</b></li>
         <li>메시는 전혀 안 건드림</li>
-        <li>HyperStudy에서 입력파일을 파싱해 <b>바로 변수로 등록</b> 가능</li>
+        <li>최적화 툴이 입력파일을 파싱해 <b>바로 변수로 등록</b> 가능</li>
       </ul>
     </div>
     <div class="card tight" style="margin:0;border-top:3px solid #0d9488">
@@ -306,7 +312,7 @@ details.verify .row .ng{color:var(--bad);font-weight:800}
 </div>
 
 <div class="card">
-  <h3>HyperMorph 용어 최소한만</h3>
+  <h3>메시 모핑 용어 최소한만</h3>
   <div class="tbl-scroll">
   <table>
     <tr><th style="width:20%">용어</th><th>무엇인가</th></tr>
@@ -315,8 +321,7 @@ details.verify .row .ng{color:var(--bad);font-weight:800}
     <tr><td><b>Shape</b></td><td class="small">핸들을 움직여 만든 <b>변형 패턴 하나를 저장한 것</b>. 이게 곧 설계변수 후보가 됩니다</td></tr>
     <tr><td><b>Shape 변수</b></td><td class="small">저장한 Shape을 <b>얼마나 적용할지</b>의 배수. 0이면 원래 형상, 1이면 저장한 만큼 완전 변형, 0.5면 절반. <b>음수·1 초과</b>도 보통 허용됩니다</td></tr>
   </table></div>
-  <div class="ins"><b>실무 흐름</b> — HyperMesh에서 Domain·Handle을 잡고 Shape을 몇 개 만들어 둡니다 →
-  HyperStudy가 그 Shape들을 <b>설계변수로 자동 인식</b>합니다 → 최적화는 각 Shape의 배수만 조절합니다.
+  <div class="ins"><b>실무 흐름</b> — 프리프로세서에서 영역(Domain)·핸들(Handle)을 잡고 형상(Shape)을 몇 개 만들어 둡니다 → 최적화 툴이 그 형상들을 <b>설계변수로 자동 인식</b>합니다 → 최적화는 각 형상의 배수만 조절합니다.
   즉 <b>형상 최적화의 어려운 부분은 최적화가 아니라 준비 단계</b>에 있습니다.</div>
 </div>
 
@@ -333,7 +338,7 @@ details.verify .row .ng{color:var(--bad);font-weight:800}
     </div>
     <div class="card tight" style="margin:0">
       <h4 style="font-size:14px">결과를 눈으로 못 봄</h4>
-      <p class="small" style="color:var(--muted)">HyperStudy 안에서는 변형된 <b>메시 형상을 바로 볼 수 없어</b> HyperView를 따로 열어야 합니다 — 실습에서 확인된 불편사항입니다.</p>
+      <p class="small" style="color:var(--muted)">Tool A 안에서는 변형된 <b>메시 형상을 바로 볼 수 없어</b> 별도 뷰어를 열어야 합니다 — 직접 실습에서 확인한 불편사항입니다.</p>
     </div>
   </div>
   <div class="ins warn" style="margin-top:12px">
@@ -440,27 +445,27 @@ details.verify .row .ng{color:var(--bad);font-weight:800}
     <tr><td><b>LHS</b><br><span class="small" style="color:var(--muted)">Latin Hypercube</span></td>
       <td class="small">🎲 확률적</td><td class="small">자유롭게 지정</td>
       <td class="small"><b>가장 무난한 기본값.</b> 대리모델을 만들 목적이면 대부분 이걸 씁니다. 축으로 투영해도 고르게 퍼지는 게 강점</td>
-      <td><span class="badge b-hs">HS</span><span class="badge b-os">OS(ALHS)</span><span class="badge b-pi">PI</span></td></tr>
+      <td><span class="badge b-hs">Tool A</span><span class="badge b-os">Tool B</span><span class="badge b-pi">Tool C</span></td></tr>
     <tr><td><b>Sobol / Mels<br>Hammersley</b></td>
       <td class="small">📐 결정론적</td><td class="small">자유롭게 지정</td>
       <td class="small">점을 <b>나중에 더 추가할지 모를 때.</b> 앞의 점을 버리지 않고 이어서 채울 수 있습니다(Sobol)</td>
-      <td><span class="badge b-hs">HS(3종)</span><span class="badge b-os">OS(Sobol)</span></td></tr>
+      <td><span class="badge b-hs">Tool A(3종)</span><span class="badge b-os">Tool B(Sobol)</span></td></tr>
     <tr><td><b>Full Factorial</b></td>
       <td class="small">📐 결정론적</td><td class="small" style="color:var(--bad)">k^(변수수)<br>= 폭발</td>
       <td class="small">변수가 <b>2~3개로 아주 적을 때만.</b> 변수 6개·3수준이면 729회라 현실성이 없습니다</td>
-      <td><span class="badge b-hs">HS</span><span class="badge b-all">공통</span></td></tr>
+      <td><span class="badge b-hs">Tool A</span><span class="badge b-all">공통</span></td></tr>
     <tr><td><b>Fractional Factorial<br>Plackett-Burman</b></td>
       <td class="small">📐 결정론적</td><td class="small">전체의 1/2·1/4</td>
       <td class="small"><b>변수가 많아 일단 걸러내야 할 때.</b> 정밀도를 포기하고 "누가 중요한 변수인가"만 빠르게 봅니다</td>
-      <td><span class="badge b-hs">HS</span><span class="badge b-all">공통</span></td></tr>
+      <td><span class="badge b-hs">Tool A</span><span class="badge b-all">공통</span></td></tr>
     <tr><td><b>CCD<br>Box-Behnken</b></td>
       <td class="small">📐 결정론적</td><td class="small">변수 수로 결정<br>(2변수 → 9점)</td>
       <td class="small"><b>2차 곡면 모델을 만들 목적일 때.</b> 공간을 고르게 덮는 게 목적이 아니라 곡률을 정확히 재는 게 목적입니다</td>
-      <td><span class="badge b-hs">HS</span><span class="badge b-os">OS</span><span class="badge b-pi">PI</span></td></tr>
+      <td><span class="badge b-hs">Tool A</span><span class="badge b-os">Tool B</span><span class="badge b-pi">Tool C</span></td></tr>
     <tr><td><b>Taguchi</b></td>
       <td class="small">📐 결정론적</td><td class="small">표준표(L9·L18)</td>
       <td class="small">환경 오차에 <b>둔감한 설계</b>를 찾을 때. 뒤의 RDO(강건설계)와 직접 연결됩니다</td>
-      <td><span class="badge b-hs">HS</span><span class="badge b-os">OS</span></td></tr>
+      <td><span class="badge b-hs">Tool A</span><span class="badge b-os">Tool B</span></td></tr>
   </table></div>
   <div class="ins warn" style="margin-top:12px">
     <b>CCD·Full Factorial은 점 개수를 슬라이더로 못 바꿉니다</b> — 구조가 개수를 결정하기 때문입니다.
@@ -545,7 +550,7 @@ details.verify .row .ng{color:var(--bad);font-weight:800}
     3D까지는 어떻게 그리지만 4차원부터는 방법이 없습니다. 그래서 발상을 바꿉니다 —
     <b>축을 공간에 세우지 말고, 나란히 세워놓고 선으로 잇는 것</b>입니다.
     설계안 하나가 <b>꺾은선 하나</b>가 되고, 변수가 20개여도 한 화면에 들어갑니다.
-    <b>HyperStudy Post-Processing의 Parallel Coordinate 탭</b>이 바로 이것입니다.
+    <b>Tool A의 평행좌표(Parallel Coordinate) 뷰</b>가 바로 이것입니다.
   </div>
 </div>
 
@@ -600,15 +605,13 @@ details.verify .row .ng{color:var(--bad);font-weight:800}
   <div class="tbl-scroll">
   <table>
     <tr><th style="width:22%">툴</th><th>위치 / 명칭</th></tr>
-    <tr><td><span class="badge b-hs">HyperStudy</span></td>
+    <tr><td><span class="badge b-hs">Tool A</span></td>
       <td class="small">Post-Processing → <b>Parallel Coordinate</b> 탭. Scatter, Correlation 히트맵과 함께 제공되며,
-      실습 캡처에서 확인된 뷰입니다(UI 분석 슬라이드 ⑥)</td></tr>
-    <tr><td><span class="badge b-os">optiSLang</span></td>
-      <td class="small">Postprocessing의 병렬좌표 뷰 — 민감도(CoP) 결과와 연동해서 봅니다</td></tr>
-    <tr><td><span class="badge b-pi">PIAnO</span></td><td class="small">결과 분석 뷰에서 제공 <span class="badge b-guess">추정 · 실습 미확인</span></td></tr>
-    <tr><td><span class="badge b-do">DashOpti</span></td>
-      <td class="small">Convergence History는 확인됨. 평행좌표 뷰 제공 여부는 <span class="badge b-guess">확인 필요</span> —
-      <b>비교표의 "결과 시각화" 항목에서 체크할 포인트</b></td></tr>
+      직접 실습에서 확인한 뷰입니다</td></tr>
+    <tr><td><span class="badge b-os">Tool B</span></td>
+      <td class="small">Postprocessing의 병렬좌표 뷰 — 민감도 결과와 연동해서 봅니다</td></tr>
+    <tr><td><span class="badge b-pi">Tool C</span></td><td class="small">결과 분석 뷰에서 제공 <span class="badge b-guess">추정 · 실습 미확인</span></td></tr>
+    
   </table></div>
 </div>
 
@@ -643,7 +646,7 @@ details.verify .row .ng{color:var(--bad);font-weight:800}
   <div class="grid g3" style="margin-top:11px">
     <div class="card tight" style="margin:0;border-top:3px solid #0891b2">
       <h4 style="color:#0891b2">다항식 (LSR / RSM)</h4>
-      <div style="margin:4px 0"><span class="badge b-hs">HS</span><span class="badge b-os">OS</span><span class="badge b-pi">PI</span></div>
+      <div style="margin:4px 0"><span class="badge b-hs">Tool A</span><span class="badge b-os">Tool B</span><span class="badge b-pi">Tool C</span></div>
       <p class="small" style="color:var(--muted)"><b>비유</b> — 산 지형을 "미끄럼틀 같은 큰 판 하나"로 뭉뚱그려 보는 것.</p>
       <ul class="li small" style="margin-top:6px;color:var(--muted)">
         <li>계산이 제일 빠르고 전체 경향 파악에 좋음</li>
@@ -663,7 +666,7 @@ details.verify .row .ng{color:var(--bad);font-weight:800}
     </div>
     <div class="card tight" style="margin:0;border-top:3px solid #7c3aed">
       <h4 style="color:#7c3aed">Kriging <span class="badge" style="background:#ede9fe;color:#5b21b6;border:1px solid #ddd6fe">중요</span></h4>
-      <div style="margin:4px 0"><span class="badge b-hs">HS(HK)</span><span class="badge b-os">OS</span><span class="badge b-pi">PI</span></div>
+      <div style="margin:4px 0"><span class="badge b-hs">Tool A</span><span class="badge b-os">Tool B</span><span class="badge b-pi">Tool C</span></div>
       <p class="small" style="color:var(--muted)"><b>비유</b> — 점을 통과하면서 <b>"이 근처는 데이터가 없어 자신 없어요"</b>라고 같이 알려주는 신호등.</p>
       <ul class="li small" style="margin-top:6px;color:var(--muted)">
         <li>점을 정확히 통과 + <b>예측이 얼마나 못 미더운지</b>까지 제공</li>
@@ -691,7 +694,7 @@ details.verify .row .ng{color:var(--bad);font-weight:800}
     <br><br><b>실무 판단</b> — 해석 결과가 깨끗하고 응답이 복잡하면 Kriging·RBF, 응답이 단순하거나 <b>실험 데이터처럼 오차가 섞였으면</b> 다항식 계열을 먼저 보세요.
   </div>
   <div class="ins"><b>그래서 자동 선택 기능이 있습니다</b> —
-  <span class="badge b-hs">HyperStudy: FAST / FSRSM</span> <span class="badge b-os">optiSLang: MOP</span>
+  <span class="badge b-hs">Tool A: 자동 모델 선택</span> <span class="badge b-os">Tool B: 자동 모델 선택</span>
   여러 모델을 다 만들어보고 교차검증 점수가 가장 좋은 것을 자동으로 골라줍니다. 시간은 더 걸리지만 <b>실패가 없어</b> 실무 기본값으로 권장됩니다.</p>
 </div>
 
@@ -773,9 +776,9 @@ details.verify .row .ng{color:var(--bad);font-weight:800}
       <td class="small">최적해를 반드시 <b>실제 CAE로 재해석해 검증</b> (전체 흐름의 6단계)</td></tr>
   </table></div>
   <div class="ins"><b>툴에서는 어디에 있나</b> —
-  <span class="badge b-hs">HyperStudy: Fit approach의 Residuals · Diagnostics 탭</span>
-  <span class="badge b-os">optiSLang: CoP / MOP 품질 지표</span><br>
-  HyperStudy는 Fit을 만들면 잔차와 교차검증 지표를 표로 보여줍니다. <b>이 화면을 그냥 넘기지 말고 반드시 확인</b>하세요 —
+  <span class="badge b-hs">Tool A: Fit approach의 Residuals · Diagnostics 탭</span>
+  <span class="badge b-os">Tool B: 교차검증 품질 지표</span><br>
+  Tool A는 대리모델을 만들면 잔차와 교차검증 지표를 표로 보여줍니다. <b>이 화면을 그냥 넘기지 말고 반드시 확인</b>하세요 —
   여기서 걸러내지 못한 오차는 최적화 결과를 통째로 무효로 만듭니다.
   </div>
 </div>
@@ -888,7 +891,7 @@ details.verify .row .ng{color:var(--bad);font-weight:800}
     <section id="sec-opt" class="section">
 <div class="hdr">
   <h2 class="title">최적화 알고리즘 — 최적점을 찾아가는 방법</h2>
-  <p class="lede">언덕과 골짜기가 있는 지형에서 <b>가장 낮은 지점</b>을 찾는 문제. 방법마다 성격이 완전히 다릅니다. <b>여기가 표C 담당 영역입니다.</b></p>
+  <p class="lede">언덕과 골짜기가 있는 지형에서 <b>가장 낮은 지점</b>을 찾는 문제. 방법마다 성격이 완전히 다릅니다. <b>이 가이드가 집중하는 영역입니다.</b></p>
 </div>
 
 <div class="qa">
@@ -920,7 +923,7 @@ details.verify .row .ng{color:var(--bad);font-weight:800}
         <li><b>단점</b> — 근처 작은 웅덩이에 빠지면 <b>거기가 최저점인 줄 압니다</b></li>
         <li><b>언제</b> — 지형이 단순하거나, 이미 좋은 출발점을 알 때</li>
       </ul>
-      <div style="margin-top:7px"><span class="badge b-hs">SQP·MFD</span><span class="badge b-do">SQP·L-BFGS-B·Trust-region 등</span></div>
+      <div style="margin-top:7px"><span class="badge b-hs">SQP·MFD</span></div>
     </div>
     <div class="card tight" style="margin:0;border-top:3px solid #dc2626">
       <h4 style="color:#dc2626">🐝 전역 탐색 (여럿이 흩어져 찾기)</h4>
@@ -930,7 +933,7 @@ details.verify .row .ng{color:var(--bad);font-weight:800}
         <li><b>단점</b> — 사람이 20명이니 <b>해석 횟수가 수십 배</b></li>
         <li><b>언제</b> — 지형이 복잡하거나, 어디가 좋은지 전혀 모를 때</li>
       </ul>
-      <div style="margin-top:7px"><span class="badge b-all">GA</span><span class="badge b-hs">MOGA</span><span class="badge b-do">GA·PSO·TLBO</span></div>
+      <div style="margin-top:7px"><span class="badge b-all">GA</span><span class="badge b-hs">MOGA</span></div>
     </div>
   </div>
   <div class="ins warn"><b>실무의 정답은 "둘 다 아님"인 경우가 많습니다</b> —
@@ -945,31 +948,30 @@ details.verify .row .ng{color:var(--bad);font-weight:800}
     <tr><th style="width:16%">이름</th><th style="width:12%">계열</th><th>한 줄 설명</th><th style="width:24%">지원 툴</th></tr>
     <tr><td><b>SQP</b></td><td class="small">구배</td>
       <td class="small">제약조건이 있는 문제의 <b>표준</b>. 곡면으로 근사해 성큼성큼 내려갑니다</td>
-      <td><span class="badge b-hs">HS</span><span class="badge b-os">OS(NLPQL)</span><span class="badge b-pi">PI</span><span class="badge b-do">DO</span></td></tr>
+      <td><span class="badge b-hs">Tool A</span><span class="badge b-os">Tool B</span><span class="badge b-pi">Tool C</span></td></tr>
     <tr><td><b>MFD</b></td><td class="small">구배</td>
       <td class="small">제약을 <b>절대 안 넘는</b> 방향으로만 이동. 안전 위주</td>
-      <td><span class="badge b-hs">HS</span></td></tr>
+      <td><span class="badge b-hs">Tool A</span></td></tr>
     <tr><td><b>Trust-region<br>L-BFGS-B 등</b></td><td class="small">구배</td>
-      <td class="small">신뢰영역·준뉴턴 계열. DashOpti가 개별 옵션으로 여러 개 노출합니다</td>
-      <td><span class="badge b-do">DashOpti 5종</span></td></tr>
+      <td class="small">신뢰영역·준뉴턴 계열. 수치 라이브러리들이 개별 옵션으로 노출하는 고전 기법군입니다</td> <td><span class="badge b-all">공통</span></td></tr>
     <tr><td><b>Nelder-Mead</b></td><td class="small">무구배<br>(국소)</td>
       <td class="small">삼각형을 뒤집어가며 아메바처럼 기어감. <b>미분이 안 되는 문제</b>에 강함</td>
-      <td><span class="badge b-all">공통</span><span class="badge b-do">DO</span></td></tr>
+      <td><span class="badge b-all">공통</span></td></tr>
     <tr><td><b>GA (유전)</b></td><td class="small">전역</td>
       <td class="small">좋은 설계끼리 <b>교배·돌연변이</b>. 두께 1.0T/1.2T 같은 <b>이산 변수</b>에 거의 유일한 답</td>
-      <td><span class="badge b-all">공통 필수</span><span class="badge b-do">DO</span></td></tr>
+      <td><span class="badge b-all">공통 필수</span></td></tr>
     <tr><td><b>PSO (군집)</b></td><td class="small">전역</td>
       <td class="small">새 떼처럼 <b>제일 좋은 동료 쪽으로</b> 몰려감. GA보다 단순하고 빠름</td>
-      <td><span class="badge b-hs">HS</span><span class="badge b-os">OS</span><span class="badge b-do">DO</span></td></tr>
+      <td><span class="badge b-hs">Tool A</span><span class="badge b-os">Tool B</span></td></tr>
     <tr><td><b>SA (담금질)</b></td><td class="small">전역</td>
       <td class="small">초반엔 <b>일부러 나쁜 쪽으로도</b> 움직여 웅덩이 탈출, 점점 안정화</td>
       <td><span class="badge b-all">공통</span></td></tr>
     <tr style="background:#f5f3ff"><td><b>ARSM / GRSM</b></td><td class="small">대리모델</td>
-      <td class="small"><b>HyperStudy 고유.</b> 다음 페이지에서 자세히 — 해석이 비쌀 때 실무 주력</td>
-      <td><span class="badge b-hs">HyperStudy</span></td></tr>
-    <tr style="background:#fdf4ff"><td><b>SORA<br>SORA_ARSM · SRO</b></td><td class="small">신뢰성</td>
+      <td class="small"><b>적응형 응답면 계열.</b> 다음 페이지에서 자세히 — 해석이 비쌀 때 실무 주력</td>
+      <td><span class="badge b-hs">Tool A</span></td></tr>
+    <tr style="background:#fdf4ff"><td><b>SORA 계열<br>변형 · 시스템 확장(SRO)</b></td><td class="small">신뢰성</td>
       <td class="small">산포를 고려한 최적화. RBDO 페이지에서 다룹니다</td>
-      <td><span class="badge b-hs">HyperStudy 3종</span></td></tr>
+      <td><span class="badge b-hs">Tool A 3종</span></td></tr>
   </table></div>
 </div>
 
@@ -978,7 +980,7 @@ details.verify .row .ng{color:var(--bad);font-weight:800}
     <section id="sec-sbo" class="section">
 <div class="hdr">
   <h2 class="title">똑똑한 반복 — ARSM · EGO</h2>
-  <p class="lede">해석 1회가 10시간일 때, <b>"다음 한 번을 어디에 쓸 것인가"</b>를 매번 다시 판단하는 방식. HyperStudy의 주력 기법입니다.</p>
+  <p class="lede">해석 1회가 10시간일 때, <b>"다음 한 번을 어디에 쓸 것인가"</b>를 매번 다시 판단하는 방식. 일부 상용 툴의 주력 기법입니다.</p>
 </div>
 
 <div class="qa">
@@ -1005,7 +1007,7 @@ details.verify .row .ng{color:var(--bad);font-weight:800}
   <div class="grid g2">
     <div class="card tight" style="margin:0;border-top:3px solid #7c3aed">
       <h4 style="color:#7c3aed">ARSM — 좋아 보이는 곳을 좁혀 들어감</h4>
-      <div style="margin:4px 0"><span class="badge b-hs">HyperStudy 주력</span></div>
+      <div style="margin:4px 0"><span class="badge b-hs">Tool A 주력</span></div>
       <p class="small" style="color:var(--muted)"><b>비유</b> — 보물이 있을 것 같은 구역에 <b>돋보기를 대고 점점 확대</b>합니다. 잘 나오면 그 방향으로 더 가고, 헛짚으면 범위를 좁힙니다.</p>
       <ul class="li small" style="margin-top:6px;color:var(--muted)">
         <li>수렴이 <b>빠릅니다</b> — 국소 집중형</li>
@@ -1015,7 +1017,7 @@ details.verify .row .ng{color:var(--bad);font-weight:800}
     </div>
     <div class="card tight" style="margin:0;border-top:3px solid #0d9488">
       <h4 style="color:#0d9488">EGO — 자신 없는 곳도 일부러 찔러봄</h4>
-      <div style="margin:4px 0"><span class="badge b-os">optiSLang AI 최적화</span></div>
+      <div style="margin:4px 0"><span class="badge b-os">Tool B: 베이지안 최적화</span></div>
       <p class="small" style="color:var(--muted)"><b>비유</b> — <b>"좋을 것 같은 곳"과 "안 가봐서 모르는 곳"을 저울질</b>해서 다음 지점을 고릅니다.</p>
       <ul class="li small" style="margin-top:6px;color:var(--muted)">
         <li>Kriging의 <b>불확실성 띠</b>가 있어야만 가능한 방식</li>
@@ -1024,7 +1026,7 @@ details.verify .row .ng{color:var(--bad);font-weight:800}
       </ul>
     </div>
   </div>
-  <div class="ins"><b>벤치마킹 포인트</b> — 이 기법군이 있느냐 없느냐가 <b>해석이 비싼 실무 문제에서 가장 큰 차이</b>를 만듭니다.
+  <div class="ins"><b>비교 포인트</b> — 이 기법군이 있느냐 없느냐가 <b>해석이 비싼 실무 문제에서 가장 큰 차이</b>를 만듭니다.
   단순히 "알고리즘 개수가 몇 개냐"보다 훨씬 중요한 비교 항목이니, 비교표에서 이 줄을 강조하세요.</div>
 </div>
 
@@ -1085,19 +1087,17 @@ details.verify .row .ng{color:var(--bad);font-weight:800}
     <tr><td><b>Morris</b><br><span class="small" style="color:var(--muted)">스크리닝</span></td>
       <td class="small">변수를 <b>하나씩 조금씩</b> 흔들어보며 반응을 관찰. "누가 범인인지"만 빠르게 추립니다</td>
       <td class="small" style="color:#16a34a">저렴 ⭐</td>
-      <td><span class="badge b-do">DashOpti</span><span class="badge b-os">optiSLang</span></td></tr>
+      <td><span class="badge b-os">Tool B</span></td></tr>
     <tr><td><b>Sobol</b><br><span class="small" style="color:var(--muted)">분산 분해</span></td>
       <td class="small">결과의 <b>흔들림 총량을 100%로 놓고</b> 각 변수가 몇 %씩 책임지는지 나눕니다. 상호작용까지 정확히 잡아냅니다</td>
       <td class="small" style="color:#dc2626">비쌈</td>
-      <td><span class="badge b-do">DashOpti</span><span class="badge b-os">OS</span><span class="badge b-hs">HS</span></td></tr>
-    <tr><td><b>CoP / SHAP</b></td>
-      <td class="small">대리모델 예측력 기반(CoP) 또는 게임이론 기반(SHAP)으로 기여도를 분해</td>
+      <td><span class="badge b-hs">Tool A</span><span class="badge b-os">Tool B</span></td></tr>
+    <tr><td><b>예측력 지표 / SHAP</b></td>
+      <td class="small">대리모델 예측력 기반 지표 또는 게임이론 기반(SHAP)으로 기여도를 분해</td>
       <td class="small">중간</td>
-      <td><span class="badge b-os">OS: CoP</span><span class="badge b-do">DO: SHAP</span></td></tr>
+      <td><span class="badge b-os">Tool B: 교차검증 지표</span></td></tr>
   </table></div>
-  <p class="small" style="margin-top:9px;color:var(--muted)">
-    ※ DashOpti는 <b>Morris·Sobol·SHAP 3종 엔진</b>을 실제로 보유한 것이 설치 폴더 조사에서 확인되었습니다 — 비교표의 "민감도 분석 연계" 항목 근거로 쓸 수 있습니다.
-  </p>
+  
 </div>
 
 <details class="verify" id="sens-verify"></details>
@@ -1105,7 +1105,7 @@ details.verify .row .ng{color:var(--bad);font-weight:800}
     <section id="sec-rbdo" class="section">
 <div class="hdr">
   <h2 class="title">안 부러지게 — RBDO (신뢰성 기반 설계)</h2>
-  <p class="lede">도면에 10.0mm라고 써도 실제 제품은 9.9~10.1mm로 나옵니다. <b>이 산포를 고려한 설계</b>가 RBDO입니다. <b>표C 담당 영역입니다.</b></p>
+  <p class="lede">도면에 10.0mm라고 써도 실제 제품은 9.9~10.1mm로 나옵니다. <b>이 산포를 고려한 설계</b>가 RBDO입니다. <b>이 가이드가 집중하는 영역입니다.</b></p>
 </div>
 
 <div class="qa">
@@ -1136,9 +1136,7 @@ details.verify .row .ng{color:var(--bad);font-weight:800}
     <b>여기까지의 거리</b>만 재면 불량률을 바로 계산할 수 있습니다. 100만 번이 <b>수십 번</b>으로 줄어듭니다.
   </div>
   <div id="mpp-demo" style="margin-top:13px"></div>
-  <div class="ins"><b>벤치마킹 연결</b> — 비교표의 <b>"신뢰성·MPP 기반 검증"</b> 항목이 바로 이 기능입니다.
-  DashOpti는 "Validation: MPP 확인"으로 문서에 명시되어 있고, HyperStudy는 <b>SORA·SORA_ARSM·SRO</b>라는
-  알고리즘 이름으로 노출합니다 — <b>어느 방식을 쓰는지</b>가 비교 포인트입니다.</div>
+  <div class="ins"><b>툴에서 만나는 모습</b> — 같은 기능이라도 노출 방식이 다릅니다. MPP 벡터를 직접 보여주는 툴이 있는가 하면, <b>SORA 계열</b> 알고리즘 이름으로만 노출하는 툴도 있습니다. <b>어느 방식을 쓰는지</b>가 비교 포인트가 됩니다.</div>
 </div>
 
 <div class="card">
@@ -1173,13 +1171,13 @@ details.verify .row .ng{color:var(--bad);font-weight:800}
       <td><span class="badge b-all">공통</span></td></tr>
     <tr style="background:#f0fdf4"><td><b>단일 루프 시프트</b><br><span class="small" style="color:var(--muted)">SORA</span></td>
       <td class="small"><b>현재 업계 주류.</b> 일반 최적화를 먼저 끝내고, 제약의 벽을 <b>안전마진만큼 안쪽으로 당긴 뒤</b> 다시 최적화합니다. 훨씬 빠릅니다</td>
-      <td><span class="badge b-hs">HS: SORA / SORA_ARSM</span></td></tr>
+      <td><span class="badge b-hs">Tool A: SORA 계열</span></td></tr>
     <tr><td><b>시스템 신뢰성</b><br><span class="small" style="color:var(--muted)">SRO</span></td>
       <td class="small">파괴 모드가 <b>여러 개</b>일 때 전체 시스템 관점에서 동시에 고려</td>
-      <td><span class="badge b-hs">HyperStudy</span></td></tr>
+      <td><span class="badge b-hs">Tool A</span></td></tr>
     <tr><td><b>몬테카를로</b><br><span class="small" style="color:var(--muted)">MCS</span></td>
       <td class="small">그냥 <b>난수로 수만~수백만 번</b> 돌려 세기. 실해석으론 불가능하고 <b>대리모델 위에서만</b> 현실적</td>
-      <td><span class="badge b-hs">HS: Stochastic</span><span class="badge b-do">DO: 라이브러리 보유</span></td></tr>
+      <td><span class="badge b-hs">Tool A: Stochastic</span></td></tr>
   </table></div>
 </div>
 
@@ -1234,12 +1232,12 @@ details.verify .row .ng{color:var(--bad);font-weight:800}
   <div class="grid g2" style="margin-top:13px">
     <div class="card tight" style="margin:0">
       <h4>Taguchi (다구찌 기법)</h4>
-      <div style="margin:4px 0"><span class="badge b-hs">HyperStudy</span><span class="badge b-os">optiSLang</span></div>
+      <div style="margin:4px 0"><span class="badge b-hs">Tool A</span><span class="badge b-os">Tool B</span></div>
       <p class="small" style="color:var(--muted)">내가 조절 가능한 인자와 조절 못 하는 잡음 인자를 <b>교차 배열</b>해서, 환경이 변해도 성능이 안 흔들리는 조합을 찾습니다. DOE의 직교배열표가 여기 쓰입니다.</p>
     </div>
     <div class="card tight" style="margin:0">
       <h4>분산 기반 RDO</h4>
-      <div style="margin:4px 0"><span class="badge b-os">optiSLang 강점</span></div>
+      <div style="margin:4px 0"><span class="badge b-os">Tool B 강점</span></div>
       <p class="small" style="color:var(--muted)">목표를 <b>"평균 성능"</b>이 아니라 <b>"평균 + 산포×가중치"</b>로 바꿔 최적화합니다 — 위 데모의 분홍 곡선이 정확히 이것입니다. 가중치를 올릴수록 안정성을 더 중시합니다.</p>
     </div>
   </div>
@@ -1273,7 +1271,7 @@ details.verify .row .ng{color:var(--bad);font-weight:800}
 
 <div class="card">
   <h3>NSGA-II / MOGA</h3>
-  <div style="margin-bottom:8px"><span class="badge b-hs">HS: MOGA</span><span class="badge b-os">OS: NSGA-II</span><span class="badge b-pi">PI: NSGA</span></div>
+  <div style="margin-bottom:8px"><span class="badge b-hs">Tool A: MOGA</span><span class="badge b-os">Tool B: NSGA-II</span><span class="badge b-pi">Tool C: NSGA</span></div>
   <p class="small">
     유전 알고리즘을 개조한 기법입니다. 개체들을 <b>"누가 누구에게 지지 않는가"로 등급을 매기고</b>,
     같은 등급 안에서는 <b>서로 멀리 떨어진 개체를 우대</b>해서 경계선 전체에 답이 고르게 퍼지도록 만듭니다.
@@ -1287,74 +1285,40 @@ details.verify .row .ng{color:var(--bad);font-weight:800}
     <section id="sec-tools" class="section">
 <div class="hdr">
   <h2 class="title">툴별 기법 총정리</h2>
-  <p class="lede">앞에서 본 모든 기법의 툴별 지원 현황. <b>벤치마킹 비교표를 채울 때 바로 쓰는 용도</b>입니다.</p>
+  <p class="lede">앞에서 본 모든 기법의 툴별 지원 현황 — <b>상용 툴 3종을 직접 비교 학습하며 정리</b>한 것입니다.</p>
 </div>
 
 <div class="ins bad">
   <b>⚠ 근거 수준을 반드시 함께 읽으세요</b><br>
   <span class="badge b-ok">확인</span> 실습 중 GUI에서 직접 본 것 ·
-  <span class="badge b-doc">문서</span> 공식 문서/설치폴더 조사 기준 ·
-  <span class="badge b-guess">추정</span> 미확인 (실습·개발팀 확인 필요)<br>
-  <b>PIAnO와 OptiSLang은 아직 실습 전</b>이라 대부분 "문서/추정"입니다. 보고서로 옮길 때 이 구분을 지우지 마세요.
+  <span class="badge b-doc">문서</span> 공식 문서 기준 ·
+  <span class="badge b-guess">추정</span> 미확인<br>
+  <b>Tool B·C는 문서 기반으로 정리한 항목이 많아</b> "문서/추정"으로 표기했습니다. 확인된 것과 추정을 섞지 않기 위해 이 구분을 그대로 둡니다.
 </div>
 
 <div class="card">
   <h3>1. 실험점 선정 (DOE)</h3>
   <div class="tbl-scroll">
-  <table>
-    <tr><th style="width:24%">기법</th><th>HyperStudy</th><th>optiSLang</th><th>PIAnO</th><th>DashOpti</th></tr>
-    <tr><td><b>LHS</b></td><td class="n"><span class="yes">✔</span> <span class="badge b-ok">확인</span></td><td class="n"><span class="yes">✔</span> ALHS</td><td class="n"><span class="yes">✔</span></td><td class="n">—</td></tr>
-    <tr><td><b>Full Factorial</b></td><td class="n"><span class="yes">✔</span> <span class="badge b-ok">확인</span></td><td class="n"><span class="yes">✔</span></td><td class="n"><span class="yes">✔</span></td><td class="n">—</td></tr>
-    <tr><td><b>Fractional Factorial</b></td><td class="n"><span class="yes">✔</span> Res III/IV/V</td><td class="n"><span class="yes">✔</span></td><td class="n"><span class="yes">✔</span></td><td class="n">—</td></tr>
-    <tr><td><b>Plackett-Burman</b></td><td class="n"><span class="yes">✔</span> <span class="badge b-ok">확인</span></td><td class="n"><span class="badge b-guess">추정</span></td><td class="n"><span class="badge b-guess">추정</span></td><td class="n">—</td></tr>
-    <tr><td><b>CCD / Box-Behnken</b></td><td class="n"><span class="yes">✔</span> 둘 다 <span class="badge b-ok">확인</span></td><td class="n"><span class="yes">✔</span></td><td class="n"><span class="yes">✔</span></td><td class="n">—</td></tr>
-    <tr><td><b>Taguchi</b></td><td class="n"><span class="yes">✔</span> <span class="badge b-ok">확인</span></td><td class="n"><span class="yes">✔</span></td><td class="n"><span class="badge b-guess">추정</span></td><td class="n">—</td></tr>
-    <tr><td><b>Sobol / Mels / Hammersley</b></td><td class="n"><span class="yes">✔</span> 3종 <span class="badge b-ok">확인</span></td><td class="n"><span class="yes">✔</span> Sobol</td><td class="n"><span class="badge b-guess">추정</span></td><td class="n">—</td></tr>
-    <tr><td><b>D-Optimal</b></td><td class="n"><span class="yes">✔</span> <span class="badge b-ok">확인</span></td><td class="n"><span class="yes">✔</span></td><td class="n"><span class="badge b-guess">추정</span></td><td class="n">—</td></tr>
-    <tr><td><b>수동 지정</b> (User/Run Matrix 등)</td><td class="n"><span class="yes">✔</span> 4종 <span class="badge b-ok">확인</span></td><td class="n"><span class="badge b-guess">추정</span></td><td class="n"><span class="badge b-guess">추정</span></td><td class="n">—</td></tr>
-  </table></div>
-  <p class="small" style="margin-top:8px;color:var(--muted)">※ DOE는 DashOpti에서 <b>표B(Model Builder) 담당 범위</b>라 표C 벤치마킹 파일로는 확인 불가 — "—"로 표기했습니다.</p>
+  <table><tr><th style="width:24%">기법</th><th>Tool A</th><th>Tool B</th><th>Tool C</th></tr> <tr><td><b>LHS</b></td><td class="n"><span class="yes">✔</span> <span class="badge b-ok">확인</span></td><td class="n"><span class="yes">✔</span></td><td class="n"><span class="yes">✔</span></td></tr> <tr><td><b>Full Factorial</b></td><td class="n"><span class="yes">✔</span> <span class="badge b-ok">확인</span></td><td class="n"><span class="yes">✔</span></td><td class="n"><span class="yes">✔</span></td></tr> <tr><td><b>Fractional Factorial</b></td><td class="n"><span class="yes">✔</span> Res III/IV/V</td><td class="n"><span class="yes">✔</span></td><td class="n"><span class="yes">✔</span></td></tr> <tr><td><b>Plackett-Burman</b></td><td class="n"><span class="yes">✔</span> <span class="badge b-ok">확인</span></td><td class="n"><span class="badge b-guess">추정</span></td><td class="n"><span class="badge b-guess">추정</span></td></tr> <tr><td><b>CCD / Box-Behnken</b></td><td class="n"><span class="yes">✔</span> 둘 다 <span class="badge b-ok">확인</span></td><td class="n"><span class="yes">✔</span></td><td class="n"><span class="yes">✔</span></td></tr> <tr><td><b>Taguchi</b></td><td class="n"><span class="yes">✔</span> <span class="badge b-ok">확인</span></td><td class="n"><span class="yes">✔</span></td><td class="n"><span class="badge b-guess">추정</span></td></tr> <tr><td><b>Sobol / Mels / Hammersley</b></td><td class="n"><span class="yes">✔</span> 3종 <span class="badge b-ok">확인</span></td><td class="n"><span class="yes">✔</span> Sobol</td><td class="n"><span class="badge b-guess">추정</span></td></tr> <tr><td><b>D-Optimal</b></td><td class="n"><span class="yes">✔</span> <span class="badge b-ok">확인</span></td><td class="n"><span class="yes">✔</span></td><td class="n"><span class="badge b-guess">추정</span></td></tr> <tr><td><b>수동 지정</b> (User/Run Matrix 등)</td><td class="n"><span class="yes">✔</span> 4종 <span class="badge b-ok">확인</span></td><td class="n"><span class="badge b-guess">추정</span></td><td class="n"><span class="badge b-guess">추정</span></td></tr></table></div>
+  
 </div>
 
 <div class="card">
   <h3>2. 대리모델</h3>
   <div class="tbl-scroll">
-  <table>
-    <tr><th style="width:24%">모델</th><th>HyperStudy</th><th>optiSLang</th><th>PIAnO</th><th>DashOpti</th></tr>
-    <tr><td><b>다항 회귀 (LSR/RSM)</b></td><td class="n"><span class="yes">✔</span> LSR</td><td class="n"><span class="yes">✔</span> RSM</td><td class="n"><span class="yes">✔</span></td><td class="n"><span class="badge b-guess">추정</span></td></tr>
-    <tr style="background:#f5f3ff"><td><b>Kriging</b> <span class="small">(불확실성 제공)</span></td><td class="n"><span class="yes">✔</span> HK</td><td class="n"><span class="yes">✔</span></td><td class="n"><span class="yes">✔</span></td><td class="n"><span class="badge b-guess">추정</span></td></tr>
-    <tr><td><b>MLSM</b></td><td class="n"><span class="yes">✔</span></td><td class="n"><span class="yes">✔</span> MOP 내부</td><td class="n"><span class="badge b-guess">추정</span></td><td class="n"><span class="badge b-guess">추정</span></td></tr>
-    <tr><td><b>RBF</b></td><td class="n"><span class="yes">✔</span></td><td class="n"><span class="yes">✔</span></td><td class="n"><span class="yes">✔</span></td><td class="n"><span class="badge b-guess">추정</span></td></tr>
-    <tr><td><b>신경망 / Random Forest</b></td><td class="n"><span class="yes">✔</span> USER.RF</td><td class="n"><span class="yes">✔</span> ML/RF</td><td class="n"><span class="badge b-guess">추정</span></td><td class="n"><span class="yes">✔</span> <span class="badge b-doc">문서</span> torch/GNN</td></tr>
-    <tr><td><b>PCE</b></td><td class="n">—</td><td class="n"><span class="yes">✔</span> 전용</td><td class="n">—</td><td class="n"><span class="badge b-doc">문서</span> openturns</td></tr>
-    <tr><td><b>SVR</b></td><td class="n"><span class="badge b-guess">추정</span></td><td class="n"><span class="badge b-guess">추정</span></td><td class="n"><span class="yes">✔</span></td><td class="n"><span class="badge b-doc">문서</span> sklearn</td></tr>
-    <tr style="background:#fefce8"><td><b>자동 최적모델 선택</b></td><td class="n"><span class="yes">✔</span> FAST/FSRSM</td><td class="n"><span class="yes">✔</span> <b>MOP</b></td><td class="n"><span class="badge b-guess">추정</span></td><td class="n"><span class="badge b-guess">추정</span></td></tr>
-  </table></div>
+  <table><tr><th style="width:24%">모델</th><th>Tool A</th><th>Tool B</th><th>Tool C</th></tr> <tr><td><b>다항 회귀 (LSR/RSM)</b></td><td class="n"><span class="yes">✔</span> LSR</td><td class="n"><span class="yes">✔</span> RSM</td><td class="n"><span class="yes">✔</span></td></tr> <tr><td><b>MLSM</b></td><td class="n"><span class="yes">✔</span></td><td class="n"><span class="yes">✔</span> 내부 자동선택</td><td class="n"><span class="badge b-guess">추정</span></td></tr> <tr><td><b>RBF</b></td><td class="n"><span class="yes">✔</span></td><td class="n"><span class="yes">✔</span></td><td class="n"><span class="yes">✔</span></td></tr> <tr><td><b>신경망 / Random Forest</b></td><td class="n"><span class="yes">✔</span> USER.RF</td><td class="n"><span class="yes">✔</span> ML/RF</td><td class="n"><span class="badge b-guess">추정</span></td></tr> <tr><td><b>PCE</b></td><td class="n">—</td><td class="n"><span class="yes">✔</span> 전용</td><td class="n">—</td></tr> <tr><td><b>SVR</b></td><td class="n"><span class="badge b-guess">추정</span></td><td class="n"><span class="badge b-guess">추정</span></td><td class="n"><span class="yes">✔</span></td></tr></table></div>
 </div>
 
 <div class="card">
-  <h3>3. 최적화 알고리즘 <span class="badge b-ok">HS·DashOpti는 GUI 캡처 기준 확정</span></h3>
+  <h3>3. 최적화 알고리즘 <span class="badge b-ok">Tool A는 직접 실습으로 확인</span></h3>
   <div class="tbl-scroll">
-  <table>
-    <tr><th style="width:20%">기법</th><th style="width:13%">계열</th><th>HyperStudy</th><th>DashOpti</th><th>optiSLang</th><th>PIAnO</th></tr>
-    <tr><td><b>SQP</b></td><td class="small">구배</td><td class="n"><span class="yes">✔</span></td><td class="n"><span class="yes">✔</span></td><td class="n"><span class="yes">✔</span> NLPQL</td><td class="n"><span class="yes">✔</span></td></tr>
-    <tr><td><b>MFD</b></td><td class="small">구배</td><td class="n"><span class="yes">✔</span></td><td class="n"><span class="no">—</span></td><td class="n"><span class="badge b-guess">추정</span></td><td class="n"><span class="badge b-guess">추정</span></td></tr>
-    <tr><td><b>Trust-region · L-BFGS-B<br>CG · TNC · Powell</b></td><td class="small">구배</td><td class="n"><span class="no">—</span></td><td class="n"><span class="yes">✔</span> 5종</td><td class="n"><span class="badge b-guess">추정</span></td><td class="n"><span class="badge b-guess">추정</span></td></tr>
-    <tr><td><b>Nelder-Mead</b></td><td class="small">무구배</td><td class="n"><span class="no">—</span></td><td class="n"><span class="yes">✔</span></td><td class="n"><span class="badge b-guess">추정</span></td><td class="n"><span class="badge b-guess">추정</span></td></tr>
-    <tr><td><b>GA</b></td><td class="small">전역</td><td class="n"><span class="yes">✔</span></td><td class="n"><span class="yes">✔</span></td><td class="n"><span class="yes">✔</span></td><td class="n"><span class="yes">✔</span></td></tr>
-    <tr><td><b>PSO</b></td><td class="small">전역</td><td class="n"><span class="badge b-guess">추정</span></td><td class="n"><span class="yes">✔</span></td><td class="n"><span class="yes">✔</span></td><td class="n"><span class="badge b-guess">추정</span></td></tr>
-    <tr><td><b>DFL_TLBO</b></td><td class="small">전역</td><td class="n"><span class="no">—</span></td><td class="n"><span class="yes">✔</span> 고유</td><td class="n"><span class="no">—</span></td><td class="n"><span class="no">—</span></td></tr>
-    <tr style="background:#f5f3ff"><td><b>ARSM / GRSM</b></td><td class="small">대리모델</td><td class="n"><span class="yes">✔</span> <b>고유 강점</b></td><td class="n"><span class="no">—</span></td><td class="n"><span class="badge b-guess">유사</span></td><td class="n"><span class="badge b-guess">추정</span></td></tr>
-    <tr><td><b>EGO (베이지안)</b></td><td class="small">대리모델</td><td class="n"><span class="badge b-guess">추정</span></td><td class="n"><span class="badge b-doc">optuna</span></td><td class="n"><span class="yes">✔</span> AI 최적화</td><td class="n"><span class="badge b-guess">추정</span></td></tr>
-    <tr><td><b>MOGA / NSGA-II</b></td><td class="small">다목적</td><td class="n"><span class="yes">✔</span> MOGA</td><td class="n"><span class="badge b-guess">추정</span></td><td class="n"><span class="yes">✔</span> NSGA</td><td class="n"><span class="yes">✔</span></td></tr>
-    <tr style="background:#fdf4ff"><td><b>SORA / SORA_ARSM / SRO</b></td><td class="small">신뢰성</td><td class="n"><span class="yes">✔</span> <b>3종 명시</b></td><td class="n"><span class="badge b-guess">명칭 없음</span></td><td class="n"><span class="badge b-guess">추정</span></td><td class="n"><span class="badge b-guess">추정</span></td></tr>
-  </table></div>
+  <table><tr><th style="width:20%">기법</th><th style="width:13%">계열</th><th>Tool A</th><th>Tool B</th><th>Tool C</th></tr> <tr><td><b>SQP</b></td><td class="small">구배</td><td class="n"><span class="yes">✔</span></td><td class="n"><span class="yes">✔</span></td><td class="n"><span class="yes">✔</span></td></tr> <tr><td><b>MFD</b></td><td class="small">구배</td><td class="n"><span class="yes">✔</span></td><td class="n"><span class="badge b-guess">추정</span></td><td class="n"><span class="badge b-guess">추정</span></td></tr> <tr><td><b>Trust-region · L-BFGS-B<br>CG · TNC · Powell</b></td><td class="small">구배</td><td class="n"><span class="no">—</span></td><td class="n"><span class="badge b-guess">추정</span></td><td class="n"><span class="badge b-guess">추정</span></td></tr> <tr><td><b>Nelder-Mead</b></td><td class="small">무구배</td><td class="n"><span class="no">—</span></td><td class="n"><span class="badge b-guess">추정</span></td><td class="n"><span class="badge b-guess">추정</span></td></tr> <tr><td><b>GA</b></td><td class="small">전역</td><td class="n"><span class="yes">✔</span></td><td class="n"><span class="yes">✔</span></td><td class="n"><span class="yes">✔</span></td></tr> <tr><td><b>PSO</b></td><td class="small">전역</td><td class="n"><span class="badge b-guess">추정</span></td><td class="n"><span class="yes">✔</span></td><td class="n"><span class="badge b-guess">추정</span></td></tr>  <tr><td><b>EGO (베이지안)</b></td><td class="small">대리모델</td><td class="n"><span class="badge b-guess">추정</span></td><td class="n"><span class="yes">✔</span> AI 최적화</td><td class="n"><span class="badge b-guess">추정</span></td></tr> <tr><td><b>MOGA / NSGA-II</b></td><td class="small">다목적</td><td class="n"><span class="yes">✔</span> MOGA</td><td class="n"><span class="yes">✔</span> NSGA</td><td class="n"><span class="yes">✔</span></td></tr></table></div>
   <div class="ins" style="margin-top:12px">
     <b>비교표 작성 시 핵심 3가지</b>
     <ul class="li" style="margin-top:6px">
-      <li><b>국소 최적화 옵션 수만 보면 DashOpti가 많습니다</b>(Trust-region·L-BFGS-B·CG·TNC·Powell·Nelder-Mead). 단순 개수 비교는 DashOpti 우세로 보입니다.</li>
-      <li>그러나 <b>ARSM/GRSM·SORA 계열은 HyperStudy 고유</b>이고, 이쪽이 <b>해석이 비싼 실제 CAE 문제에서 훨씬 중요</b>합니다. 개수보다 이 유무가 결정적입니다.</li>
-      <li>DashOpti의 RBDO는 <b>알고리즘 명칭이 노출되지 않으므로</b>, 어떤 방식(이중루프/SORA/단일루프)인지 개발팀 확인이 필요합니다. 이 항목이 비교표의 빈칸을 가릅니다.</li>
+      <li><b>국소 최적화 옵션의 "개수"는 툴 비교에서 착시를 만듭니다</b> — Trust-region·L-BFGS-B·CG·TNC·Powell·Nelder-Mead 같은 고전 기법은 수치 라이브러리로 채우기 쉽습니다.</li>
+      <li>그러나 <b>적응형 응답면(ARSM/GRSM)·SORA 계열은 지원 툴이 제한적</b>이고, 이쪽이 <b>해석이 비싼 실제 CAE 문제에서 훨씬 중요</b>합니다. 개수보다 이 유무가 결정적입니다.</li>
+      <li>RBDO는 <b>알고리즘 명칭을 노출하지 않는 툴</b>도 있습니다. 어떤 방식(이중루프/SORA/단일루프)인지 확인되기 전까지는 "미확인"으로 두는 것이 정직한 표기입니다.</li>
     </ul>
   </div>
 </div>
@@ -1362,13 +1326,7 @@ details.verify .row .ng{color:var(--bad);font-weight:800}
 <div class="card">
   <h3>4. 불확실성 · 신뢰성</h3>
   <div class="tbl-scroll">
-  <table>
-    <tr><th style="width:24%">기능</th><th>HyperStudy</th><th>optiSLang</th><th>PIAnO</th><th>DashOpti</th></tr>
-    <tr><td><b>MPP 기반 검증</b></td><td class="n"><span class="yes">✔</span></td><td class="n"><span class="yes">✔</span></td><td class="n"><span class="yes">✔</span></td><td class="n"><span class="yes">✔</span> <span class="badge b-doc">문서</span></td></tr>
-    <tr><td><b>몬테카를로</b></td><td class="n"><span class="yes">✔</span> Stochastic</td><td class="n"><span class="yes">✔</span></td><td class="n"><span class="yes">✔</span></td><td class="n"><span class="badge b-doc">문서</span> openturns</td></tr>
-    <tr><td><b>강건설계 (RDO)</b></td><td class="n"><span class="yes">✔</span> Taguchi</td><td class="n"><span class="yes">✔</span> <b>분산기반</b></td><td class="n"><span class="badge b-guess">추정</span></td><td class="n"><span class="badge b-guess">추정</span></td></tr>
-    <tr><td><b>민감도 (Morris/Sobol/SHAP)</b></td><td class="n"><span class="yes">✔</span></td><td class="n"><span class="yes">✔</span> CoP</td><td class="n"><span class="yes">✔</span></td><td class="n"><span class="yes">✔</span> <span class="badge b-ok">확인</span> 3종</td></tr>
-  </table></div>
+  <table><tr><th style="width:24%">기능</th><th>Tool A</th><th>Tool B</th><th>Tool C</th></tr> <tr><td><b>MPP 기반 검증</b></td><td class="n"><span class="yes">✔</span></td><td class="n"><span class="yes">✔</span></td><td class="n"><span class="yes">✔</span></td></tr> <tr><td><b>몬테카를로</b></td><td class="n"><span class="yes">✔</span> Stochastic</td><td class="n"><span class="yes">✔</span></td><td class="n"><span class="yes">✔</span></td></tr> <tr><td><b>강건설계 (RDO)</b></td><td class="n"><span class="yes">✔</span> Taguchi</td><td class="n"><span class="yes">✔</span> <b>분산기반</b></td><td class="n"><span class="badge b-guess">추정</span></td></tr> <tr><td><b>민감도 (Morris/Sobol/SHAP)</b></td><td class="n"><span class="yes">✔</span></td><td class="n"><span class="yes">✔</span> 교차검증 지표</td><td class="n"><span class="yes">✔</span></td></tr></table></div>
 </div>
 
 <div class="card" style="background:#f8fafc">
@@ -1379,10 +1337,16 @@ details.verify .row .ng{color:var(--bad);font-weight:800}
     <b>한계</b> — 이해를 돕기 위해 설계변수를 <b>1~2개</b>로 줄인 모형입니다.
     실제 문제(변수 수십 개, 제약 다수)에서는 기법 간 우열이 달라질 수 있고,
     특히 <b>변수가 많아질수록 공간이 급격히 비어버리는 현상</b>은 2차원 그림으로는 체감되지 않습니다.
+    <br><br>상용 최적설계 툴 3종(익명 표기: Tool A·B·C)을 직접 실습·비교 학습하며 정리한 내용을 바탕으로 만들었습니다.
+    지원 현황 표의 <b>확인/문서/추정</b> 구분은 그 학습 기록의 정직한 표기입니다.
   </div>
 </div>
 </section>
   </div>
+<div style="text-align:center;padding:26px 16px 34px;border-top:1px solid var(--line);background:var(--card)">
+  <a href="https://euichanlee0608-svg.github.io/" style="display:inline-block;padding:9px 18px;border:1px solid var(--line2);border-radius:999px;color:var(--ink2);text-decoration:none;font-size:13.5px">전체 포트폴리오 보기 →</a>
+  <div style="margin-top:10px;font-size:12px;color:var(--muted)">Euichan Lee · 교육용 데모 — 모든 수치는 브라우저가 직접 계산한 결과입니다</div>
+</div>
 </main>
 
 <script>
@@ -1855,9 +1819,9 @@ function renderVerify(hostId,rows){
     "<b>2. 실험점 선정 (DOE)</b> — 해석을 몇 번밖에 못 돌리니, <b>어디를 찔러볼지</b> 미리 계획합니다. 설계공간에 점을 고르게 뿌리는 것이 핵심입니다.",
     "<b>3. CAE 해석</b> — 선정한 점마다 실제로 해석을 돌립니다. <b>여기가 전체 비용의 90% 이상</b>입니다. 1회에 몇 시간씩 걸리므로 횟수를 줄이는 게 전부입니다.",
     "<b>4. 대리모델 학습</b> — 얻은 점들을 지나는 <b>부드러운 곡면</b>을 만듭니다. 이제 해석 없이도 \"이 설계면 대충 이 값\"을 즉시 예측할 수 있습니다.",
-    "<b>5. 최적화 탐색</b> — 대리모델 위에서 공이 굴러 내려가듯 <b>가장 좋은 지점</b>을 찾습니다. 예측이 공짜라 수만 번 시도해도 됩니다. <b style='color:#fdba74'>여기가 표C 담당</b>입니다.",
+    "<b>5. 최적화 탐색</b> — 대리모델 위에서 공이 굴러 내려가듯 <b>가장 좋은 지점</b>을 찾습니다. 예측이 공짜라 수만 번 시도해도 됩니다. <b style='color:#fdba74'>이 가이드의 초점</b>입니다.",
     "<b>6. 최적안 검증</b> — 대리모델이 찍어준 최적점을 <b>실제 CAE로 다시 한 번</b> 돌려 확인합니다. 예측과 실제가 다르면 대리모델을 보강해 다시 돌아갑니다.",
-    "<b>7. 불확실성 반영</b> — 도면에 10.0mm라 써도 실제는 9.9~10.1mm로 나옵니다. 이 <b>산포를 고려</b>해 불량이 안 나오는 설계로 조정합니다. <b style='color:#fdba74'>여기도 표C 담당</b>입니다.",
+    "<b>7. 불확실성 반영</b> — 도면에 10.0mm라 써도 실제는 9.9~10.1mm로 나옵니다. 이 <b>산포를 고려</b>해 불량이 안 나오는 설계로 조정합니다. <b style='color:#fdba74'>역시 이 가이드의 초점</b>입니다.",
     "전체 흐름이 한 바퀴입니다. 실무에서는 <b>6번에서 4번으로 되돌아가는 반복</b>이 자주 일어나고, 뒤에서 배울 <b>ARSM·EGO</b>는 이 되돌아감을 자동화한 기법입니다."
   ];
   let demo=null;
@@ -1906,10 +1870,10 @@ function renderVerify(hostId,rows){
       c.fillStyle=sc;c.font='600 10.5px system-ui';
       c.fillText(s.s,b.x+b.w/2,b.y+b.h/2+9);
       c.restore();
-      /* 표C 표시 */
+      /* 초점 배지 표시 */
       if((i===4||i===6)&&active<0){
         c.save();c.fillStyle="#ea580c";c.font='800 9px system-ui';c.textAlign="center";
-        c.fillText("표C 담당",b.x+b.w/2,b.y-4);c.restore();
+        c.fillText("가이드 초점",b.x+b.w/2,b.y-4);c.restore();
       }
     });
     return L;
@@ -2042,8 +2006,8 @@ function renderVerify(hostId,rows){
       label("도면값 하나가 아니라 '퍼진 분포'로 생각한다 — 꼬리가 불량률","#c026d3");
     }
     else{ /* 요약 */
-      const items=[["1~2단계","DOE · 대리모델","표B (Model Builder/Runner)","#059669"],
-                   ["3~4단계","최적화 · 신뢰성","표C (Optimizer) ← 내 담당","#ea580c"]];
+      const items=[["1~2단계","DOE · 대리모델","준비 단계","#059669"],
+                   ["3~4단계","최적화 · 신뢰성","이 가이드의 초점","#ea580c"]];
       items.forEach((it,i)=>{
         const by=y+28+i*54;
         if(p<i*.4)return;
@@ -3099,7 +3063,7 @@ DOE.minDist=function(P){let m=Infinity;
     "설계안을 계속 추가합니다. 160개를 다 그리면 이렇게 <b>실타래처럼</b> 보입니다. 여기까지는 아직 아무것도 안 보입니다.",
     "이제 <b>성능이 좋은 상위 16개만 색칠</b>하고 나머지는 흐리게 만듭니다. 갑자기 <b>패턴이 드러납니다.</b>",
     "읽어보세요 — 좋은 설계(초록)들은 <b>\"두께 t는 낮게, 반경 r은 높게\"</b>에 몰려 있습니다. 반면 <b>\"각도\" 축에서는 위아래로 흩어져</b> 있습니다. 각도는 결과에 별 영향이 없다는 뜻입니다.",
-    "<b>이것이 평행좌표의 힘입니다</b> — 변수가 6개든 20개든 한 화면에 담기고, <b>어떤 변수가 중요한지·좋은 값 범위가 어디인지</b>를 눈으로 읽어냅니다. HyperStudy Post-Processing의 Parallel Coordinate 탭이 정확히 이 화면입니다."
+    "<b>이것이 평행좌표의 힘입니다</b> — 변수가 6개든 20개든 한 화면에 담기고, <b>어떤 변수가 중요한지·좋은 값 범위가 어디인지</b>를 눈으로 읽어냅니다. 상용 툴의 평행좌표 뷰가 정확히 이 화면입니다."
   ];
   function draw(P,step,p){
     const c=P.ctx;P.clear();
@@ -4776,6 +4740,21 @@ MOO.pareto=function(P){
 
 buildNav();
 switchTab("intro");
+</script>
+<script>
+(function(){
+  var WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbxWKySPAxWsYnoZ9zo7G2wUK2CusxPwjy1USt_DyCFmmIe_y2pu8lAKBluImAHXXKHv4A/exec';
+  try {
+    if (location.protocol === 'file:' || location.hostname === 'localhost' || location.hostname === '127.0.0.1') {
+      /* 로컬·헤드리스 테스트는 알림 금지 */
+    } else if (location.search.indexOf('owner=1') !== -1) {
+      localStorage.setItem('__is_owner__', '1');
+    } else if (localStorage.getItem('__is_owner__') !== '1') {
+      var img = new Image();
+      img.src = WEBAPP_URL + '?ref=' + encodeURIComponent('optguide|' + (document.referrer || 'direct'));
+    }
+  } catch (e) {}
+})();
 </script>
 </body>
 </html>
