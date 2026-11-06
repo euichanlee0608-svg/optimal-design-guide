@@ -90,6 +90,15 @@ window.KO_HTML = __KOHTML__;
   const saved = (()=>{try{return localStorage.getItem("odg_lang");}catch(e){return null;}})();
   const auto = (navigator.language||"").toLowerCase().startsWith("ko") ? "ko" : "en";
   window.LANG = (q==="en"||q==="ko") ? q : (saved || auto);
+  /* ?lang= 은 고른 언어로 저장하고 주소에서 뺀다. 남겨 두면 장마다 쌓인 방문 기록에 옛 언어가 박혀
+     뒤로 가기가 언어까지 되돌린다. 저장이 막힌 브라우저에선 주소에 그대로 둔다. */
+  if (q==="en"||q==="ko") {
+    try{
+      localStorage.setItem("odg_lang", q);
+      const u = new URL(location.href); u.searchParams.delete("lang");
+      history.replaceState(history.state, "", u.pathname + u.search + u.hash);
+    }catch(e){}
+  }
 })();
 function __T(s){
   /* 빈 문자열("개" → "")도 정당한 번역이므로 truthiness 로 판단하면 안 된다 */
@@ -119,16 +128,18 @@ function applyLang(){
     o.classList.toggle("on", o.dataset.l === window.LANG));
 }
 function setLang(l){
-  window.LANG = l;
-  try{ localStorage.setItem("odg_lang", l); }catch(e){}
-  applyLang();
-  /* 캔버스는 다시 그려야 라벨이 바뀐다 */
-  if (window.ALL_DEMOS) ALL_DEMOS.forEach(d=>{ try{ d.render(); }catch(e){} });
-  if (typeof CURRENT !== "undefined" && typeof SEC !== "undefined") {
-    const h = SEC[CURRENT];
-    if (h && h.onShow) { try{ h.onShow(); }catch(e){} }
-  }
-  if (typeof markScrollTables === "function") setTimeout(markScrollTables, 60);
+  if (l === window.LANG) return;
+  /* 제자리 교체로는 안 된다: 목차·탭·버튼·그림 라벨·자체검증 같은 JS 문자열은
+     __T() 가 처음 실행될 때의 언어로 굳는다(2026-11-07 실측: 전환 뒤 한 장에 한글 50여 곳).
+     그래서 고른 언어를 저장하고 다시 읽는다. 장(#해시)과 읽던 위치는 그대로 돌려 놓는다. */
+  try{ const m = document.getElementById("main");
+       if (m) sessionStorage.setItem("odg_scroll", String(Math.round(m.scrollTop))); }catch(e){}
+  let saved = false;
+  try{ localStorage.setItem("odg_lang", l); saved = localStorage.getItem("odg_lang") === l; }catch(e){}
+  if (saved) { location.reload(); return; }
+  const u = new URL(location.href);
+  u.searchParams.set("lang", l);
+  location.replace(u.toString());
 }
 </script>
 """
@@ -145,9 +156,10 @@ function setLang(l){
     k = out.find("<script>")
     out = out[:k] + runtime.strip() + "\n" + out[k:]
 
-    # 부팅 마지막에 applyLang 적용
-    out = out.replace('buildNav();\ninitMobileShell();\nswitchTab("intro");',
-                      'buildNav();\ninitMobileShell();\napplyLang();\nswitchTab("intro");', 1)
+    # 부팅 마지막(첫 장을 열기 직전)에 applyLang 적용 — 못 찾으면 영어판이 조용히 깨지므로 멈춘다
+    boot = 'buildNav();\ninitMobileShell();\n'
+    assert out.count(boot) == 1, "부팅 코드(buildNav/initMobileShell)를 찾지 못함"
+    out = out.replace(boot, boot + 'applyLang();\n', 1)
 
     open(OUTF, "w", encoding="utf-8").write(out)
     print(f"html 블록 {len(H)}개 · js 리터럴 {len(J)}개 주입")

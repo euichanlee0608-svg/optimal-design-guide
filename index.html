@@ -1458,6 +1458,15 @@ window.KO_HTML = ["최적설계 시각 가이드","보면서 이해하는 CAE �
   const saved = (()=>{try{return localStorage.getItem("odg_lang");}catch(e){return null;}})();
   const auto = (navigator.language||"").toLowerCase().startsWith("ko") ? "ko" : "en";
   window.LANG = (q==="en"||q==="ko") ? q : (saved || auto);
+  /* ?lang= 은 고른 언어로 저장하고 주소에서 뺀다. 남겨 두면 장마다 쌓인 방문 기록에 옛 언어가 박혀
+     뒤로 가기가 언어까지 되돌린다. 저장이 막힌 브라우저에선 주소에 그대로 둔다. */
+  if (q==="en"||q==="ko") {
+    try{
+      localStorage.setItem("odg_lang", q);
+      const u = new URL(location.href); u.searchParams.delete("lang");
+      history.replaceState(history.state, "", u.pathname + u.search + u.hash);
+    }catch(e){}
+  }
 })();
 function __T(s){
   /* 빈 문자열("개" → "")도 정당한 번역이므로 truthiness 로 판단하면 안 된다 */
@@ -1487,16 +1496,18 @@ function applyLang(){
     o.classList.toggle("on", o.dataset.l === window.LANG));
 }
 function setLang(l){
-  window.LANG = l;
-  try{ localStorage.setItem("odg_lang", l); }catch(e){}
-  applyLang();
-  /* 캔버스는 다시 그려야 라벨이 바뀐다 */
-  if (window.ALL_DEMOS) ALL_DEMOS.forEach(d=>{ try{ d.render(); }catch(e){} });
-  if (typeof CURRENT !== "undefined" && typeof SEC !== "undefined") {
-    const h = SEC[CURRENT];
-    if (h && h.onShow) { try{ h.onShow(); }catch(e){} }
-  }
-  if (typeof markScrollTables === "function") setTimeout(markScrollTables, 60);
+  if (l === window.LANG) return;
+  /* 제자리 교체로는 안 된다: 목차·탭·버튼·그림 라벨·자체검증 같은 JS 문자열은
+     __T() 가 처음 실행될 때의 언어로 굳는다(2026-11-07 실측: 전환 뒤 한 장에 한글 50여 곳).
+     그래서 고른 언어를 저장하고 다시 읽는다. 장(#해시)과 읽던 위치는 그대로 돌려 놓는다. */
+  try{ const m = document.getElementById("main");
+       if (m) sessionStorage.setItem("odg_scroll", String(Math.round(m.scrollTop))); }catch(e){}
+  let saved = false;
+  try{ localStorage.setItem("odg_lang", l); saved = localStorage.getItem("odg_lang") === l; }catch(e){}
+  if (saved) { location.reload(); return; }
+  const u = new URL(location.href);
+  u.searchParams.set("lang", l);
+  location.replace(u.toString());
 }
 </script>
 <script>
@@ -1946,8 +1957,10 @@ const NAV=[
 const SEC={};
 function registerSection(id,h){SEC[id]=h;}
 let CURRENT="intro";
-function switchTab(id){
+function switchTab(id,fromHistory){
   if(!document.getElementById("sec-"+id))return;
+  /* 장마다 주소에 #id 를 남긴다 - 새로고침해도 그 장으로, 뒤로 가기는 앞 장으로 */
+  if(!fromHistory&&location.hash.slice(1)!==id){try{history.pushState(null,"","#"+id);}catch(e){}}
   for(const k in SEC)if(SEC[k]&&SEC[k].onHide)try{SEC[k].onHide();}catch(e){}
   document.querySelectorAll(".section").forEach(s=>s.classList.remove("active"));
   document.getElementById("sec-"+id).classList.add("active");
@@ -5022,7 +5035,16 @@ MOO.pareto=function(P){
 buildNav();
 initMobileShell();
 applyLang();
-switchTab("intro");
+function tabFromHash(){const h=decodeURIComponent(location.hash.slice(1));return TAB_IDS.includes(h)?h:"intro";}
+addEventListener("popstate",()=>{const id=tabFromHash();if(id!==CURRENT)switchTab(id,true);});
+switchTab(tabFromHash(),true);
+/* 언어를 바꾸면 페이지를 다시 읽는다 - 읽던 위치로 돌려 놓는다 */
+(function(){let y=null;try{y=sessionStorage.getItem("odg_scroll");sessionStorage.removeItem("odg_scroll");}catch(e){}
+  if(y===null)return;const m=document.getElementById("main");let n=0;
+  /* 데모가 그려지며 본문 높이가 자라므로 목표에 닿을 때까지 몇 번 더 맞춘다 */
+  const f=()=>{m.style.scrollBehavior="auto";m.scrollTop=+y;m.style.scrollBehavior="";
+    if(Math.abs(m.scrollTop-y)>2&&++n<12)setTimeout(f,150);};
+  setTimeout(f,150);})();
 setTimeout(markScrollTables,400);
 </script>
 <script>
