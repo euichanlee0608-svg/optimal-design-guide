@@ -525,7 +525,7 @@
   "522": "About this app",
   "523": "Every chart here is not a picture but <b>a result the browser computed live</b> (LHS and Sobol sequences, Kriging, PSO, Pareto dominance and the rest are implemented directly).\n  Open the <b>🔬 self-verification</b> panel at the foot of each page to see the values the app computed at run time <b>checked against the mathematical answer</b>.",
   "524": "\n    <b>Limits</b> — these are models reduced to <b>one or two design variables</b> to make them understandable.\n    On real problems (dozens of variables, many constraints) the ranking between methods can change,\n    and in particular <b>the way space empties out as variables are added</b> is not something a two-dimensional picture can convey.\n    <br><br>Built from notes taken while studying and comparing three commercial optimal-design tools hands-on (anonymised here as Tool A, B and C).\n    The <b>confirmed / documented / estimated</b> marks in the support tables are the honest record of that study.\n  ",
-  "525": "See the full portfolio →",
+  "525": "More in the Workshop →",
   "526": "Euichan Lee · educational demo — every figure is computed by your browser"
  },
  "js": {
